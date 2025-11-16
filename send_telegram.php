@@ -4,19 +4,12 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Загружаем переменные окружения
-require_once 'env.php';
+// Зашифрованный токен в base64
+$encrypted_token = "ODUxNDIxNzA0NzphQUdCM21wVHJUSUh0T0tHZjVYQmVQbngtcUY2RUFHTEJSQQ==";
+$chat_id = "7337792719"; // ЗАМЕНИ на свой chat_id!
 
-// Получаем настройки из .env
-$bot_token = $_ENV['BOT_TOKEN'] ?? getenv('BOT_TOKEN');
-$chat_id = $_ENV['CHAT_ID'] ?? getenv('CHAT_ID');
-
-// Проверяем что настройки загрузились
-if (empty($bot_token) || empty($chat_id)) {
-    error_log('Ошибка: Не удалось загрузить настройки из .env');
-    echo json_encode(['success' => false, 'error' => 'Ошибка сервера']);
-    exit;
-}
+// Расшифровываем токен
+$bot_token = base64_decode($encrypted_token);
 
 // Получаем данные из POST запроса
 $username = $_POST['username'] ?? '';
