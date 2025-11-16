@@ -4,57 +4,499 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бесплатный сайт</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .description {
+            color: #777;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* ===== MAIN BUTTON ===== */
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::after {
+            left: 100%;
+        }
+
+        /* ===== MODAL STYLES ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .modal p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: #999;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ===== CLOSE BUTTON ===== */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        /* ===== MESSAGE STYLES ===== */
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .feature {
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-primary {
+                padding: 15px 35px;
+                font-size: 1.1rem;
+            }
+            
+            .modal-content {
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            .modal-content {
+                padding: 25px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Получите бесплатный сайт!</h1>
-            <p>Профессиональный сайт для вашего бизнеса</p>
-        </div>
-        
-        <div class="main-content">
-            <button id="freeSiteBtn" class="cta-button">Хочу бесплатный сайт</button>
-        </div>
+        <h1>🚀 Получите профессиональный сайт бесплатно!</h1>
+        <p class="subtitle">Создаем сайты, которые продают</p>
+        <p class="description">Оставьте заявку и получите современный сайт для вашего бизнеса с адаптивным дизайном и SEO-оптимизацией</p>
         
         <div class="features">
             <div class="feature">
-                <h3>🚀 Быстро</h3>
-                <p>Создадим сайт за 3 дня</p>
+                <div class="feature-icon">📱</div>
+                <div class="feature-text">Адаптивный дизайн</div>
             </div>
             <div class="feature">
-                <h3>💎 Качественно</h3>
-                <p>iба чотко</p>
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">Высокая скорость</div>
             </div>
             <div class="feature">
-                <h3>🆓 Бесплатно</h3>
-                <p>Никаких скрытых платежей</p>
+                <div class="feature-icon">🔍</div>
+                <div class="feature-text">SEO-оптимизация</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <div class="feature-text">Современный дизайн</div>
             </div>
         </div>
+        
+        <button class="btn-primary" onclick="openModal()">Хочу бесплатный сайт</button>
     </div>
 
     <!-- Модальное окно -->
-    <div id="modal" class="modal">
+    <div class="modal" id="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Оставьте ваш Telegram</h2>
-            <p>Мы свяжемся с вами для обсуждения деталей</p>
-            <form id="telegramForm">
-                <div class="input-group">
-                    <label for="username">Ваш @username в Telegram:</label>
-                    <input type="text" id="username" name="username" placeholder="@username" required>
-                    <small>Обязательно с @ в начале</small>
-                </div>
-                <button type="submit" class="submit-btn">Отправить заявку</button>
-            </form>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <h2>Оставьте заявку</h2>
+            <p>Введите ваш Telegram username для связи. Мы напишем вам в течение 24 часов!</p>
+            
+            <div class="form-group">
+                <label for="username">Telegram username:</label>
+                <input type="text" id="username" class="input-field" placeholder="@username" required>
+            </div>
+            
+            <button class="submit-btn" onclick="submitRequest()">Отправить заявку</button>
+            
+            <div class="message" id="message"></div>
         </div>
     </div>
 
-    <!-- Уведомление -->
-    <div id="notification" class="notification hidden">
-        <span id="notificationText"></span>
-    </div>
+    <script>
+        function openModal() {
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('username').focus();
+        }
 
-    <script src="script.js"></script>
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            hideMessage();
+            document.getElementById('username').value = '';
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+        }
+
+        function hideMessage() {
+            document.getElementById('message').style.display = 'none';
+        }
+
+        function submitRequest() {
+            const username = document.getElementById('username').value.trim();
+            const submitBtn = document.querySelector('.submit-btn');
+            
+            // Валидация
+            if (!username.startsWith('@') || username.length < 2) {
+                showMessage('❌ Пожалуйста, введите корректный username (начинается с @)', 'error');
+                return;
+            }
+
+            if (username === '@') {
+                showMessage('❌ Введите username после символа @', 'error');
+                return;
+            }
+
+            // Показываем загрузку
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Отправка...';
+            submitBtn.disabled = true;
+            showMessage('⏳ Отправляем заявку...', 'loading');
+
+            // ЗДЕСЬ ВАЖНО: замените URL на ваш реальный PHP-хостинг
+            const phpServerUrl = 'https://your-php-server.com/handler.php';
+            
+            // Или используем временное решение для демонстрации
+            setTimeout(() => {
+                // Это демо-результат - в реальности здесь будет fetch на PHP сервер
+                const isSuccess = Math.random() > 0.3; // 70% шанс успеха для демо
+                
+                if (isSuccess) {
+                    showMessage('✅ Заявка успешно отправлена! Мы свяжемся с вами в Telegram в течение 24 часов.', 'success');
+                    submitBtn.textContent = 'Заявка отправлена!';
+                    setTimeout(() => {
+                        closeModal();
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                } else {
+                    showMessage('❌ Ошибка отправки. Пожалуйста, попробуйте еще раз или напишите нам напрямую.', 'error');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 2000);
+
+            /*
+            // РЕАЛЬНЫЙ КОД ДЛЯ PHP СЕРВЕРА (раскомментируйте когда будет хостинг):
+            fetch(phpServerUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('✅ Заявка успешно отправлена! Мы свяжемся с вами в Telegram.', 'success');
+                    submitBtn.textContent = 'Заявка отправлена!';
+                    setTimeout(() => {
+                        closeModal();
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                } else {
+                    showMessage('❌ Ошибка: ' + data.error, 'error');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                showMessage('❌ Ошибка сети. Проверьте соединение.', 'error');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+            */
+        }
+
+        // Закрытие модального окна по клику вне его
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Открытие модального окна по Enter
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('modal').style.display === 'flex') {
+                submitRequest();
+            }
+        });
+    </script>
 </body>
 </html>
