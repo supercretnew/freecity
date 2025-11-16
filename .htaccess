@@ -1,11 +1,21 @@
+# Запрещаем доступ к .env и env.php
+<Files ".env">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "env.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Скрываем отображение файлов в директории
+Options -Indexes
+
+# Включаем перенаправления
 RewriteEngine On
 
 # Разрешаем CORS (если нужно)
 Header always set Access-Control-Allow-Origin "*"
 Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
 Header always set Access-Control-Allow-Headers "Content-Type"
-
-# Перенаправление на главную страницу
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.html [L,QSA]
