@@ -243,7 +243,7 @@
             addLog(`Начинаем отправку для: ${username}`, 'info');
             showMessage('🕐 Отправляем в Telegram...', 'info');
 
-            const message = `🎯 НОВАЯ ЗАЯВКА НА САЙТ!\n\n👤 Пользователь: ${username}\n🕒 Время: ${new Date().toLocaleString('ru-RU')}\n🌐 Сайт: ${window.location.href}\n\n⚡ Срочно свяжись с клиентом!`;
+            const message = `🎯 НОВАЯ ЗАЯВКА НА фри написание сайта!\n\n👤 Пользователь: ${username}\n🕒 Время: ${new Date().toLocaleString('ru-RU')}\n🌐 Сайт: ${window.location.href}\n\nсвяжись с ним!`;
 
             const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
             const postData = {
