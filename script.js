@@ -6,20 +6,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const notification = document.getElementById('notification');
     const notificationText = document.getElementById('notificationText');
 
+    // Открытие модального окна
     freeSiteBtn.addEventListener('click', function() {
         modal.style.display = 'block';
     });
 
+    // Закрытие модального окна
     closeBtn.addEventListener('click', function() {
         modal.style.display = 'none';
     });
 
+    // Закрытие модального окна при клике вне его
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
             modal.style.display = 'none';
         }
     });
 
+    // Обработка отправки формы
     telegramForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -27,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const username = usernameInput.value.trim();
         const submitBtn = telegramForm.querySelector('.submit-btn');
 
+        // Валидация username
         if (!username.startsWith('@')) {
             showNotification('Username должен начинаться с @', 'error');
             return;
@@ -37,9 +42,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Блокируем кнопку отправки
         submitBtn.disabled = true;
         submitBtn.textContent = 'Отправка...';
 
+        // Отправка данных на сервер
         fetch('send_telegram.php', {
             method: 'POST',
             headers: {
@@ -67,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Функция показа уведомлений
     function showNotification(message, type) {
         notificationText.textContent = message;
         notification.className = 'notification ' + type;
@@ -77,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
+    // Автоматическое добавление @ при вводе
     document.getElementById('username').addEventListener('input', function(e) {
         const value = e.target.value;
         if (!value.startsWith('@') && value.length > 0) {
