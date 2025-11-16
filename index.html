@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бесплатный сайт</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Получите бесплатный сайт!</h1>
+            <p>Профессиональный сайт для вашего бизнеса</p>
+        </div>
+        
+        <div class="main-content">
+            <button id="freeSiteBtn" class="cta-button">Хочу бесплатный сайт</button>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🚀 Быстро</h3>
+                <p>Создадим сайт за 1-2 дня</p>
+            </div>
+            <div class="feature">
+                <h3>💎 Качественно</h3>
+                <p>iба чотко</p>
+            </div>
+            <div class="feature">
+                <h3>🆓 Бесплатно</h3>
+                <p>Никаких скрытых платежей</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Оставьте ваш Telegram</h2>
+            <p>Мы свяжемся с вами для обсуждения деталей</p>
+            <form id="telegramForm">
+                <div class="input-group">
+                    <label for="username">Ваш @username в Telegram:</label>
+                    <input type="text" id="username" name="username" placeholder="@username" required>
+                    <small>Обязательно с @ в начале</small>
+                </div>
+                <button type="submit" class="submit-btn">Отправить заявку</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="notification hidden">
+        <span id="notificationText"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
