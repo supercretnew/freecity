@@ -40,6 +40,12 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
         .btn-primary {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
@@ -50,6 +56,30 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
+            margin: 10px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin: 10px;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
         }
 
         .modal {
@@ -70,8 +100,15 @@
             padding: 40px;
             border-radius: 20px;
             width: 90%;
-            max-width: 450px;
+            max-width: 500px;
             text-align: center;
+            position: relative;
+        }
+
+        .modal-large {
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .input-field {
@@ -92,6 +129,7 @@
             cursor: pointer;
             font-size: 1.1rem;
             width: 100%;
+            margin: 10px 0;
         }
 
         .message {
@@ -103,28 +141,120 @@
 
         .success { background: #d4edda; color: #155724; }
         .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
 
-        .debug-info {
+        .logs-container {
+            text-align: left;
             margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
             padding: 15px;
             background: #f8f9fa;
+        }
+
+        .log-entry {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .log-success { border-left-color: #28a745; }
+        .log-error { border-left-color: #dc3545; }
+        .log-warning { border-left-color: #ffc107; }
+
+        .log-time {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .log-message {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .log-details {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
             border-radius: 10px;
-            text-align: left;
-            font-size: 0.9rem;
-            display: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .clear-logs-btn {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🚀 Получите профессиональный сайт бесплатно!</h1>
-        <button class="btn-primary" onclick="openModal()">Хочу бесплатный сайт</button>
+        <p class="description">Оставьте заявку и получите современный сайт для вашего бизнеса</p>
         
-        <div class="debug-info" id="debugInfo"></div>
+        <button class="btn-primary" onclick="openModal()">Хочу бесплатный сайт</button>
+        <button class="btn-secondary" onclick="showLogs()">📊 Чекнуть логи</button>
     </div>
 
+    <!-- Модальное окно заявки -->
     <div class="modal" id="modal">
         <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
             <h2>Оставьте заявку</h2>
             <input type="text" id="username" class="input-field" placeholder="@username" required>
             <button class="submit-btn" onclick="submitRequest()">Отправить заявку</button>
@@ -132,129 +262,205 @@
         </div>
     </div>
 
-    <script>
-        // Функция для сохранения логов в GitHub
-        async function saveToGitHubLogs(logData) {
-            const logEntry = {
-                timestamp: new Date().toISOString(),
-                username: logData.username,
-                status: logData.status,
-                message: logData.message,
-                userAgent: navigator.userAgent,
-                referrer: document.referrer,
-                url: window.location.href
-            };
-
-            try {
-                // Сохраняем в localStorage для резервного копирования
-                const existingLogs = JSON.parse(localStorage.getItem('site_logs') || '[]');
-                existingLogs.push(logEntry);
-                localStorage.setItem('site_logs', JSON.stringify(existingLogs));
-
-                // Пытаемся сохранить в GitHub через GitHub Pages
-                await saveToGitHubPages(logEntry);
-                
-                return true;
-            } catch (error) {
-                console.error('Ошибка сохранения логов:', error);
-                return false;
-            }
-        }
-
-        // Функция для сохранения в GitHub Pages (используем GitHub API)
-        async function saveToGitHubPages(logEntry) {
-            // Для этого нужно создать отдельный endpoint или использовать GitHub Actions
-            // Пока сохраняем только в localStorage и выводим в консоль
-            console.log('📝 ЛОГ ЗАПИСАН:', logEntry);
+    <!-- Модальное окно логов -->
+    <div class="modal" id="logsModal">
+        <div class="modal-content modal-large">
+            <button class="close-btn" onclick="closeLogsModal()">&times;</button>
+            <h2>📊 Системные логи</h2>
             
-            // В реальном проекте здесь был бы fetch к вашему API
-            // который сохраняет логи в репозиторий через GitHub API
-        }
+            <div class="stats" id="stats">
+                <!-- Статистика будет генерироваться JavaScript -->
+            </div>
 
-        // Функция для показа отладочной информации
-        function showDebugInfo(info) {
-            const debugDiv = document.getElementById('debugInfo');
-            debugDiv.innerHTML = `<strong>Отладочная информация:</strong><br>${info}`;
-            debugDiv.style.display = 'block';
-        }
+            <div class="logs-container" id="logsContainer">
+                <!-- Логи будут отображаться здесь -->
+            </div>
 
+            <button class="clear-logs-btn" onclick="clearLogs()">🗑️ Очистить логи</button>
+            <button class="btn-secondary" onclick="exportLogs()">📥 Экспорт логов</button>
+        </div>
+    </div>
+
+    <script>
+        // Ключ для localStorage
+        const LOGS_KEY = 'site_request_logs';
+
+        // Функции для работы с модальными окнами
         function openModal() {
             document.getElementById('modal').style.display = 'flex';
         }
 
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('message').style.display = 'none';
+            document.getElementById('username').value = '';
+        }
+
+        function showLogs() {
+            displayLogs();
+            document.getElementById('logsModal').style.display = 'flex';
+        }
+
+        function closeLogsModal() {
+            document.getElementById('logsModal').style.display = 'none';
+        }
+
+        // Функции для работы с логами
+        function saveLog(username, status, message = '') {
+            const logEntry = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                username: username,
+                status: status,
+                message: message,
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+
+            const existingLogs = getLogs();
+            existingLogs.unshift(logEntry); // Добавляем в начало
+            localStorage.setItem(LOGS_KEY, JSON.stringify(existingLogs));
+            
+            console.log('💾 Лог сохранен:', logEntry);
+            return logEntry;
+        }
+
+        function getLogs() {
+            return JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+        }
+
+        function clearLogs() {
+            if (confirm('Вы уверены, что хотите очистить все логи?')) {
+                localStorage.removeItem(LOGS_KEY);
+                displayLogs();
+            }
+        }
+
+        function exportLogs() {
+            const logs = getLogs();
+            const dataStr = JSON.stringify(logs, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `site-logs-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+
+        function displayLogs() {
+            const logs = getLogs();
+            const logsContainer = document.getElementById('logsContainer');
+            const statsContainer = document.getElementById('stats');
+
+            // Статистика
+            const totalRequests = logs.length;
+            const successRequests = logs.filter(log => log.status === 'success').length;
+            const errorRequests = logs.filter(log => log.status === 'error' || log.status === 'network_error').length;
+
+            statsContainer.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${totalRequests}</div>
+                    <div class="stat-label">Всего запросов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${successRequests}</div>
+                    <div class="stat-label">Успешных</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${errorRequests}</div>
+                    <div class="stat-label">Ошибок</div>
+                </div>
+            `;
+
+            // Отображение логов
+            if (logs.length === 0) {
+                logsContainer.innerHTML = '<div class="log-entry">Логов пока нет</div>';
+                return;
+            }
+
+            logsContainer.innerHTML = logs.map(log => `
+                <div class="log-entry ${getLogStatusClass(log.status)}">
+                    <div class="log-time">
+                        ${new Date(log.timestamp).toLocaleString('ru-RU')}
+                        | ID: ${log.id}
+                    </div>
+                    <div class="log-message">
+                        👤 ${log.username} | 📊 ${getStatusText(log.status)}
+                    </div>
+                    <div class="log-details">
+                        ${log.message || 'Нет дополнительной информации'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getLogStatusClass(status) {
+            switch(status) {
+                case 'success': return 'log-success';
+                case 'error': return 'log-error';
+                case 'network_error': return 'log-error';
+                default: return 'log-warning';
+            }
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'started': '🟡 Запрос начат',
+                'success': '🟢 Успешно отправлено',
+                'error': '🔴 Ошибка сервера',
+                'network_error': '🔴 Ошибка сети'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Основная функция отправки запроса
         async function submitRequest() {
             const username = document.getElementById('username').value.trim();
             const messageDiv = document.getElementById('message');
             const submitBtn = document.querySelector('.submit-btn');
 
+            // Валидация
             if (!username.startsWith('@') || username.length < 2) {
-                showMessage('❌ Введите корректный username', 'error');
+                showMessage('❌ Введите корректный username (начинается с @)', 'error');
                 return;
             }
 
             // Сохраняем лог начала запроса
-            await saveToGitHubLogs({
-                username: username,
-                status: 'started',
-                message: 'Запрос начат'
-            });
+            saveLog(username, 'started', 'Запрос начат');
 
             submitBtn.textContent = 'Отправка...';
             submitBtn.disabled = true;
 
             try {
-                // Твой PHP сервер
                 const phpServerUrl = 'https://твой-php-хостинг.com/handler.php';
                 
                 const response = await fetch(phpServerUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ username: username })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    // Лог успешной отправки
-                    await saveToGitHubLogs({
-                        username: username,
-                        status: 'success',
-                        message: 'Заявка отправлена в Telegram'
-                    });
-                    
-                    showMessage('✅ Заявка отправлена!', 'success');
-                    showDebugInfo(`Username: ${username}<br>Статус: Успешно<br>Время: ${new Date().toLocaleString()}`);
+                    saveLog(username, 'success', 'Заявка успешно отправлена в Telegram');
+                    showMessage('✅ Заявка отправлена! Мы свяжемся с вами в Telegram.', 'success');
                     
                     setTimeout(() => {
-                        document.getElementById('modal').style.display = 'none';
+                        closeModal();
                         submitBtn.textContent = 'Отправить заявку';
                         submitBtn.disabled = false;
                     }, 3000);
                 } else {
-                    // Лог ошибки
-                    await saveToGitHubLogs({
-                        username: username,
-                        status: 'error',
-                        message: data.error || 'Неизвестная ошибка'
-                    });
-                    
+                    saveLog(username, 'error', data.error || 'Неизвестная ошибка сервера');
                     showMessage('❌ Ошибка: ' + data.error, 'error');
                     submitBtn.textContent = 'Отправить заявку';
                     submitBtn.disabled = false;
                 }
 
             } catch (error) {
-                // Лог ошибки сети
-                await saveToGitHubLogs({
-                    username: username,
-                    status: 'network_error',
-                    message: error.message
-                });
-                
-                showMessage('❌ Ошибка сети', 'error');
-                showDebugInfo(`Ошибка: ${error.message}<br>Проверьте консоль браузера (F12)`);
+                saveLog(username, 'network_error', error.message);
+                showMessage('❌ Ошибка сети. Проверьте соединение.', 'error');
                 submitBtn.textContent = 'Отправить заявку';
                 submitBtn.disabled = false;
             }
@@ -267,12 +473,16 @@
             messageDiv.style.display = 'block';
         }
 
-        // Показываем существующие логи при загрузке
-        window.addEventListener('load', () => {
-            const existingLogs = JSON.parse(localStorage.getItem('site_logs') || '[]');
-            if (existingLogs.length > 0) {
-                showDebugInfo(`Всего записей в логах: ${existingLogs.length}<br>Последняя: ${existingLogs[existingLogs.length - 1].timestamp}`);
+        // Закрытие модальных окон по клику вне области
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
             }
+        });
+
+        // Инициализация при загрузке
+        window.addEventListener('load', () => {
+            console.log('🚀 Система логов готова к работе');
         });
     </script>
 </body>
